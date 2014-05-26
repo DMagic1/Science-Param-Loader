@@ -30,11 +30,9 @@ using System.IO;
 
 namespace ScienceParamLoader
 {
-    [KSPAddonFixed(KSPAddon.Startup.MainMenu, true, typeof(ScienceParamLoader))]
+    [KSPAddonImproved(KSPAddonImproved.Startup.SpaceCenter | KSPAddonImproved.Startup.Flight | KSPAddonImproved.Startup.TrackingStation | KSPAddonImproved.Startup.EditorAny, true)]
     public class ScienceParamLoader: MonoBehaviour
-    {
-        private string path = Path.Combine(new DirectoryInfo(KSPUtil.ApplicationRootPath).FullName, "GameData/ScienceParamLoader/ScienceParams.cfg").Replace("\\","/");
-     
+    {     
         public void Start()
         {
             paramLoader();
@@ -42,28 +40,47 @@ namespace ScienceParamLoader
 
         public void paramLoader()
         {
-            ConfigNode node = ConfigNode.Load(path);
             CelestialBody body;
             int i;
             float f;
-            if (node == null) print("Science Param config file not found");
-            else
+            foreach (ConfigNode node in GameDatabase.Instance.GetConfigNodes("Custom_Science_Params"))
             {
-                ConfigNode paramNode = node.GetNode("Custom_Science_Params");
-                foreach (ConfigNode bodyNode in paramNode.GetNodes("Body"))
+                if (node == null) print("[Science Param] config file not found");
+                else
                 {
-                    if (Int32.TryParse(bodyNode.GetValue("Body_Index"), out i)) body = FlightGlobals.Bodies[i];
-                    else continue;
-                    if (float.TryParse(bodyNode.GetValue("LandedDataValue"), out f)) body.scienceValues.LandedDataValue = f;
-                    if (float.TryParse(bodyNode.GetValue("SplashedDataValue"), out f)) body.scienceValues.SplashedDataValue = f;
-                    if (float.TryParse(bodyNode.GetValue("FlyingLowDataValue"), out f)) body.scienceValues.FlyingLowDataValue = f;
-                    if (float.TryParse(bodyNode.GetValue("FlyingHighDataValue"), out f)) body.scienceValues.FlyingHighDataValue = f;
-                    if (float.TryParse(bodyNode.GetValue("InSpaceLowDataValue"), out f)) body.scienceValues.InSpaceLowDataValue = f;
-                    if (float.TryParse(bodyNode.GetValue("InSpaceHighDataValue"), out f)) body.scienceValues.InSpaceHighDataValue = f;
-                    if (float.TryParse(bodyNode.GetValue("RecoveredDataValue"), out f)) body.scienceValues.RecoveryValue = f;
-                    if (float.TryParse(bodyNode.GetValue("FlyingAltitude"), out f)) body.scienceValues.flyingAltitudeThreshold = f;
-                    if (float.TryParse(bodyNode.GetValue("SpaceAltitude"), out f)) body.scienceValues.spaceAltitudeThreshold = f;
-                    print("New Science Paramaters set for [" + body.theName + "]");
+                    print("[Science Param] Looking up Science Paramater values now...");
+                    foreach (ConfigNode bodyNode in node.GetNodes("Body"))
+                    {
+                        body = null;
+                        if (Int32.TryParse(bodyNode.GetValue("Body_Index"), out i))
+                        {
+                            try
+                            {
+                                body = FlightGlobals.Bodies[i];
+                            }
+                            catch
+                            {
+                                print("[Science Param] Celestial Body Index [" + i.ToString() + "] not found");
+                                continue;
+                            }
+                        }
+                        else continue;
+                        if (body == null) continue;
+                        else
+                        {
+                            if (float.TryParse(bodyNode.GetValue("LandedDataValue"), out f)) body.scienceValues.LandedDataValue = f;
+                            if (float.TryParse(bodyNode.GetValue("SplashedDataValue"), out f)) body.scienceValues.SplashedDataValue = f;
+                            if (float.TryParse(bodyNode.GetValue("FlyingLowDataValue"), out f)) body.scienceValues.FlyingLowDataValue = f;
+                            if (float.TryParse(bodyNode.GetValue("FlyingHighDataValue"), out f)) body.scienceValues.FlyingHighDataValue = f;
+                            if (float.TryParse(bodyNode.GetValue("InSpaceLowDataValue"), out f)) body.scienceValues.InSpaceLowDataValue = f;
+                            if (float.TryParse(bodyNode.GetValue("InSpaceHighDataValue"), out f)) body.scienceValues.InSpaceHighDataValue = f;
+                            if (float.TryParse(bodyNode.GetValue("RecoveredDataValue"), out f)) body.scienceValues.RecoveryValue = f;
+                            if (float.TryParse(bodyNode.GetValue("FlyingAltitude"), out f)) body.scienceValues.flyingAltitudeThreshold = f;
+                            if (float.TryParse(bodyNode.GetValue("SpaceAltitude"), out f)) body.scienceValues.spaceAltitudeThreshold = f;
+                            print("[Science Param] New Science Paramaters set for [" + body.theName + "]");
+                        }
+                    }
+                    break;
                 }
             }
         }
