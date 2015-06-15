@@ -1,7 +1,8 @@
-﻿/* Science Param Loader
+﻿#region license
+/* Science Param Loader
  * Module for altering Celestial Body Science Param values from a config file.
  *
- * Copyright (c) 2014, David Grandy <david.grandy@gmail.com>
+ * Copyright (c) 2015, David Grandy <david.grandy@gmail.com>
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -23,66 +24,85 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+#endregion
 
-using System;
 using UnityEngine;
-using System.IO;
 
 namespace ScienceParamLoader
 {
-    [KSPAddonImproved(KSPAddonImproved.Startup.SpaceCenter | KSPAddonImproved.Startup.Flight | KSPAddonImproved.Startup.TrackingStation | KSPAddonImproved.Startup.EditorAny, true)]
-    public class ScienceParamLoader: MonoBehaviour
-    {     
-        public void Start()
-        {
-            paramLoader();
-        }
+	[KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
+	public class ScienceParamLoader : MonoBehaviour
+	{
+		private static bool run;
 
-        public void paramLoader()
-        {
-            CelestialBody body;
-            int i;
-            float f;
-            foreach (ConfigNode node in GameDatabase.Instance.GetConfigNodes("Custom_Science_Params"))
-            {
-                if (node == null) print("[Science Param] config file not found");
-                else
-                {
-                    print("[Science Param] Looking up Science Paramater values now...");
-                    foreach (ConfigNode bodyNode in node.GetNodes("Body"))
-                    {
-                        body = null;
-                        if (Int32.TryParse(bodyNode.GetValue("Body_Index"), out i))
-                        {
-                            try
-                            {
-                                body = FlightGlobals.Bodies[i];
-                            }
-                            catch
-                            {
-                                print("[Science Param] Celestial Body Index [" + i.ToString() + "] not found");
-                                continue;
-                            }
-                        }
-                        else continue;
-                        if (body == null) continue;
-                        else
-                        {
-                            if (float.TryParse(bodyNode.GetValue("LandedDataValue"), out f)) body.scienceValues.LandedDataValue = f;
-                            if (float.TryParse(bodyNode.GetValue("SplashedDataValue"), out f)) body.scienceValues.SplashedDataValue = f;
-                            if (float.TryParse(bodyNode.GetValue("FlyingLowDataValue"), out f)) body.scienceValues.FlyingLowDataValue = f;
-                            if (float.TryParse(bodyNode.GetValue("FlyingHighDataValue"), out f)) body.scienceValues.FlyingHighDataValue = f;
-                            if (float.TryParse(bodyNode.GetValue("InSpaceLowDataValue"), out f)) body.scienceValues.InSpaceLowDataValue = f;
-                            if (float.TryParse(bodyNode.GetValue("InSpaceHighDataValue"), out f)) body.scienceValues.InSpaceHighDataValue = f;
-                            if (float.TryParse(bodyNode.GetValue("RecoveredDataValue"), out f)) body.scienceValues.RecoveryValue = f;
-                            if (float.TryParse(bodyNode.GetValue("FlyingAltitude"), out f)) body.scienceValues.flyingAltitudeThreshold = f;
-                            if (float.TryParse(bodyNode.GetValue("SpaceAltitude"), out f)) body.scienceValues.spaceAltitudeThreshold = f;
-                            print("[Science Param] New Science Paramaters set for [" + body.theName + "]");
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-    }
+		private void Start()
+		{
+			if (!run)
+				paramLoader();
+		}
+
+		private void paramLoader()
+		{
+			run = true;
+
+			CelestialBody body = null;
+			int i = 0;
+			float f = 0;
+
+			print("[Science Param Loader] Looking Up Custom Science Parameters Now...");
+
+			foreach (ConfigNode node in GameDatabase.Instance.GetConfigNodes("Custom_Science_Params"))
+			{
+				if (node == null)
+					continue;
+
+				foreach (ConfigNode bodyNode in node.GetNodes("Body_Science_Params"))
+				{
+					if (bodyNode == null)
+						continue;
+
+					if (!int.TryParse(bodyNode.GetValue("Body_Index"), out i))
+					{
+						print("[Science Param Loader] Invalid Celestial Body Index [" + bodyNode.GetValue("Body_Index") + "]; Skipping Config...");
+						continue;
+					}
+
+					if (FlightGlobals.Bodies.Count <= i)
+					{
+						print("[Science Param Loader] No Body With Index [" + i + "]; Skipping Config...");
+						continue;
+					}
+
+					body = FlightGlobals.Bodies[i];
+
+					if (body == null)
+					{
+						print("[Science Param Loader] Celestial Body Value Null For Index [" + i + "]; Skipping Config...");
+						continue;
+					}
+
+					if (float.TryParse(bodyNode.GetValue("LandedDataValue"), out f))
+						body.scienceValues.LandedDataValue = f;
+					if (float.TryParse(bodyNode.GetValue("SplashedDataValue"), out f))
+						body.scienceValues.SplashedDataValue = f;
+					if (float.TryParse(bodyNode.GetValue("FlyingLowDataValue"), out f))
+						body.scienceValues.FlyingLowDataValue = f;
+					if (float.TryParse(bodyNode.GetValue("FlyingHighDataValue"), out f))
+						body.scienceValues.FlyingHighDataValue = f;
+					if (float.TryParse(bodyNode.GetValue("InSpaceLowDataValue"), out f))
+						body.scienceValues.InSpaceLowDataValue = f;
+					if (float.TryParse(bodyNode.GetValue("InSpaceHighDataValue"), out f))
+						body.scienceValues.InSpaceHighDataValue = f;
+					if (float.TryParse(bodyNode.GetValue("RecoveredDataValue"), out f))
+						body.scienceValues.RecoveryValue = f;
+					if (float.TryParse(bodyNode.GetValue("FlyingAltitude"), out f))
+						body.scienceValues.flyingAltitudeThreshold = f;
+					if (float.TryParse(bodyNode.GetValue("SpaceAltitude"), out f))
+						body.scienceValues.spaceAltitudeThreshold = f;
+					print("[Science Param Loader] New Science Paramaters Set For [" + body.theName + "]");
+				}
+			}
+		}
+
+	}
 }
