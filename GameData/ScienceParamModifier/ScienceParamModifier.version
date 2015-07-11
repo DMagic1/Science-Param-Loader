@@ -1,0 +1,31 @@
+{
+     "NAME":"Celestial Body Science Editor",
+	 "URL":"https://raw.githubusercontent.com/DMagic1/Science-Param-Loader/master/GameData/ScienceParamModifier/ScienceParamModifier.version",
+     "DOWNLOAD":"https://kerbalstuff.com/mod/930/Celestial%20Body%20Science%20Editor/download/5.0",
+     "GITHUB":{
+         "USERNAME":"DMagic1",
+         "REPOSITORY":"Science-Param-Loader",
+         "ALLOW_PRE_RELEASE":false,
+     },
+     "VERSION":{
+         "MAJOR":1,
+         "MINOR":0,
+         "PATCH":5,
+         "BUILD":0
+     },
+     "KSP_VERSION":{
+         "MAJOR":1,
+         "MINOR":0,
+         "PATCH":4
+     },
+     "KSP_VERSION_MIN":{
+         "MAJOR":1,
+         "MINOR":0,
+         "PATCH":0
+     },
+     "KSP_VERSION_MAX":{
+         "MAJOR":1,
+         "MINOR":0,
+         "PATCH":99
+     }
+ } 
