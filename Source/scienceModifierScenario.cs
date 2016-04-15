@@ -41,33 +41,10 @@ namespace ScienceParamModifier
 	{
 		public static scienceModifierScenario Instance
 		{
-			get
-			{
-				if (HighLogic.LoadedScene == GameScenes.MAINMENU)
-					return null;
-
-				Game g = HighLogic.CurrentGame;
-				if (g == null)
-					return null;
-				try
-				{
-					var mod = g.scenarios.FirstOrDefault(m => m.moduleName == typeof(scienceModifierScenario).Name);
-					if (mod != null)
-						return (scienceModifierScenario)mod.moduleRef;
-					else
-						return null;
-				}
-				catch (Exception e)
-				{
-					SM_MBE.LogFormatted("Could not find Contracts Modifier Scenario Module: {0}", e);
-					return null;
-				}
-			}
-			private set { }
+			get { return instance; }
 		}
 
-		[KSPField(isPersistant = true)]
-		public string version = "1.0";
+		private static scienceModifierScenario instance;
 
 		public bool alterRecoveredData = false;
 		public bool stockToolbar = true;
@@ -89,6 +66,8 @@ namespace ScienceParamModifier
 
 		private void Start()
 		{
+			instance = this;
+
 			if (!disableToolbar)
 			{
 				if (stockToolbar || !ToolbarManager.ToolbarAvailable)
@@ -136,11 +115,10 @@ namespace ScienceParamModifier
 
 			if (!disableSaveLoading)
 			{
-				bool.TryParse(node.GetValue("alterRecoveredData"), out alterRecoveredData);
-				if (!bool.TryParse(node.GetValue("stockToolbar"), out stockToolbar))
-					stockToolbar = true;
-				bool.TryParse(node.GetValue("warnedAlterRecovered"), out warnedAlterRecovered);
-				bool.TryParse(node.GetValue("warnedToolbar"), out warnedToolbar);
+				node.TryGetValue("alterRecoveredData", ref alterRecoveredData);
+				node.TryGetValue("stockToolbar", ref stockToolbar);
+				node.TryGetValue("warnedAlterRecovered", ref warnedAlterRecovered);
+				node.TryGetValue("warnedToolbar", ref warnedToolbar);
 
 				try
 				{
