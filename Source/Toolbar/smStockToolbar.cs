@@ -31,6 +31,7 @@ using System.Collections;
 
 using ScienceParamModifier.Framework;
 using UnityEngine;
+using KSP.UI.Screens;
 
 namespace ScienceParamModifier.Toolbar
 {

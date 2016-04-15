@@ -71,6 +71,8 @@ namespace ScienceParamModifier
 
 		protected override void Start()
 		{
+			base.Start();
+
 			stockToolbar = scienceModifierScenario.Instance.stockToolbar;
 			alterRecovered = scienceModifierScenario.Instance.alterRecoveredData;
 			disableToolbar = scienceModifierScenario.Instance.disableToolbar;
@@ -78,6 +80,8 @@ namespace ScienceParamModifier
 
 		protected override void OnDestroy()
 		{
+			base.OnDestroy();
+
 			unlockControls();
 		}
 

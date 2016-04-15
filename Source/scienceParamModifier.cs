@@ -82,6 +82,8 @@ namespace ScienceParamModifier
 
 		protected override void Start()
 		{
+			base.Start();
+
 			paramsList = ScienceConfigValuesNode.getBodyConfigList();
 
 			setCurrentPlanet(paramsList[0]);
@@ -89,6 +91,8 @@ namespace ScienceParamModifier
 
 		protected override void OnDestroy()
 		{
+			base.OnDestroy();
+
 			unlockControls();
 
 			if (settingsWindow != null)
