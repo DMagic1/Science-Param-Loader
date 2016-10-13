@@ -51,19 +51,16 @@ namespace ScienceParamModifier
 		internal static GUIStyle configDropMenu;
 		internal static GUIStyle configLabel;
 		internal static GUIStyle configButton;
-		internal static GUIStyle configToggle;
 		internal static GUIStyle configTextBox;
 		internal static GUIStyle configTextBoxBad;
 
 		internal static Texture2D toolbarIcon;
 		internal static Texture2D dropDownTex;
-		internal static Texture2D settingsIcon;
 
 		protected override void OnGUIOnceOnly()
 		{
 			dropDownTex = GameDatabase.Instance.GetTexture("ScienceParamModifier/Icons/DropDownTex", false);
 			toolbarIcon = GameDatabase.Instance.GetTexture("ScienceParamModifier/Icons/ScienceModifierAppIcon", false);
-			settingsIcon = GameDatabase.Instance.GetTexture("ScienceParamModifier/Icons/ToolbarSettingsIcon", false);
 
 			smUnitySkin = SM_SkinsLibrary.CopySkin(SM_SkinsLibrary.DefSkinType.Unity);
 			SM_SkinsLibrary.AddSkin("SMUnitySkin", smUnitySkin);
@@ -137,11 +134,6 @@ namespace ScienceParamModifier
 			configButton.fontSize = 13;
 			configButton.fontStyle = FontStyle.Bold;
 
-			configToggle = new GUIStyle(SM_SkinsLibrary.DefUnitySkin.toggle);
-			configToggle.name = "ConfigToggle";
-			configToggle.fontSize = 14;
-			configToggle.fontStyle = FontStyle.Bold;
-
 			configTextBox = new GUIStyle(SM_SkinsLibrary.DefUnitySkin.textField);
 
 			configTextBoxBad = new GUIStyle(configTextBox);
@@ -151,14 +143,12 @@ namespace ScienceParamModifier
 			SM_SkinsLibrary.List["SMUnitySkin"].window = new GUIStyle(newWindowStyle);
 			SM_SkinsLibrary.List["SMUnitySkin"].button = new GUIStyle(configButton);
 			SM_SkinsLibrary.List["SMUnitySkin"].label = new GUIStyle(configLabel);
-			SM_SkinsLibrary.List["SMUnitySkin"].toggle = new GUIStyle(configToggle);
 			SM_SkinsLibrary.List["SMUnitySkin"].box = new GUIStyle(dropDown);
 			SM_SkinsLibrary.List["SMUnitySkin"].textField = new GUIStyle(configTextBox);
 
 			SM_SkinsLibrary.AddStyle("SMUnitySkin", newWindowStyle);
 			SM_SkinsLibrary.AddStyle("SMUnitySkin", configButton);
 			SM_SkinsLibrary.AddStyle("SMUnitySkin", configLabel);
-			SM_SkinsLibrary.AddStyle("SMUnitySkin", configToggle);
 			SM_SkinsLibrary.AddStyle("SMUnitySkin", dropDown);
 			SM_SkinsLibrary.AddStyle("SMUnitySkin", configTextBox);
 		}
