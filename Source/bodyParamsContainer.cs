@@ -148,7 +148,7 @@ namespace ScienceParamModifier
 			float recovered = adjustedParams.RecoveredData;
 			adjustedParams = new paramSet(defaultParams);
 
-			if (!scienceModifierScenario.Instance.alterRecoveredData)
+			if (smConfigLoad.Settings != null && !smConfigLoad.Settings.alterRecoveredData)
 				setNewParamValue(recovered, scienceParamType.recovered);
 		}
 

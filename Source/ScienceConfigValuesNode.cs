@@ -40,18 +40,6 @@ namespace ScienceParamModifier
 	public class ScienceConfigValuesNode : SM_ConfigNodeStorage
 	{
 		[Persistent]
-		private bool disableToolbar = false;
-		[Persistent]
-		private bool disableSaveSpecificValues = false;
-		[Persistent]
-		private bool alterRecoveredData = false;
-		[Persistent]
-		private bool stockToolbar = true;
-		[Persistent]
-		private bool warnedToolbar = false;
-		[Persistent]
-		private bool warnedAlterRecovered = false;
-		[Persistent]
 		private List<bodyParamsContainer> bodyDefaltConfigs = new List<bodyParamsContainer>();
 
 		private static Dictionary<string, bodyParamsContainer> masterBodyConfigs = new Dictionary<string, bodyParamsContainer>();
@@ -70,15 +58,6 @@ namespace ScienceParamModifier
 
 		public override void OnEncodeToConfigNode()
 		{
-			if (scienceModifierScenario.Instance != null)
-			{
-				disableToolbar = scienceModifierScenario.Instance.disableToolbar;
-				stockToolbar = scienceModifierScenario.Instance.stockToolbar;
-				alterRecoveredData = scienceModifierScenario.Instance.alterRecoveredData;
-				warnedAlterRecovered = scienceModifierScenario.Instance.warnedAlterRecovered;
-				warnedToolbar = scienceModifierScenario.Instance.warnedToolbar;
-			}
-
 			try
 			{
 				bodyDefaltConfigs = masterBodyConfigs.Values.ToList();
@@ -155,36 +134,6 @@ namespace ScienceParamModifier
 
 				addToBodyConfigList(new bodyParamsContainer(b));
 			}
-		}
-
-		public bool DisableToolbar
-		{
-			get { return disableToolbar; }
-		}
-
-		public bool DisableSaveSpecificValues
-		{
-			get { return disableSaveSpecificValues; }
-		}
-
-		public bool AlterRecoveredData
-		{
-			get { return alterRecoveredData; }
-		}
-
-		public bool StockToolbar
-		{
-			get { return stockToolbar; }
-		}
-
-		public bool WarnedAlterRecovered
-		{
-			get { return warnedAlterRecovered; }
-		}
-
-		public bool WarnedToolbar
-		{
-			get { return warnedToolbar; }
 		}
 	}
 }

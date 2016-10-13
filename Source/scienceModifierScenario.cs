@@ -46,37 +46,32 @@ namespace ScienceParamModifier
 
 		private static scienceModifierScenario instance;
 
-		public bool alterRecoveredData = false;
-		public bool stockToolbar = true;
-		public bool disableToolbar = false;
-		public bool warnedToolbar = false;
-		public bool warnedAlterRecovered = false;
-		private bool disableSaveLoading = false;
+		private smGameParameters settings;
 
+		public smGameParameters Settings
+		{
+			get { return settings; }
+		}
+		
 		internal smStockToolbar appLauncherButton;
 		internal smToolbar blizzyToolbarButton;
 		internal scienceParamModifier scienceParamModifier;
 
 		private ScienceConfigValuesNode smNode;
 
-		public ScienceConfigValuesNode SMNode
-		{
-			get { return smNode; }
-		}
-
 		private void Start()
 		{
 			instance = this;
 
-			if (!disableToolbar)
+			if (settings != null && !settings.disableToolbars)
 			{
-				if (stockToolbar || !ToolbarManager.ToolbarAvailable)
+				if (settings.useStock || !ToolbarManager.ToolbarAvailable)
 				{
 					appLauncherButton = gameObject.AddComponent<smStockToolbar>();
 					if (blizzyToolbarButton != null)
 						Destroy(blizzyToolbarButton);
 				}
-				else if (ToolbarManager.ToolbarAvailable && !stockToolbar)
+				else if (ToolbarManager.ToolbarAvailable && !settings.useStock)
 				{
 					blizzyToolbarButton = gameObject.AddComponent<smToolbar>();
 					if (appLauncherButton != null)
@@ -103,51 +98,35 @@ namespace ScienceParamModifier
 			if (smNode == null)
 				smNode = new ScienceConfigValuesNode(smConfigLoad.fileName);
 
-			if (smNode != null)
+			if (HighLogic.LoadedSceneIsGame && HighLogic.CurrentGame != null)
 			{
-				disableSaveLoading = smNode.DisableSaveSpecificValues;
-				alterRecoveredData = smNode.AlterRecoveredData;
-				stockToolbar = smNode.StockToolbar;
-				disableToolbar = smNode.DisableToolbar;
-				warnedAlterRecovered = smNode.WarnedAlterRecovered;
-				warnedToolbar = smNode.WarnedToolbar;
+				settings = HighLogic.CurrentGame.Parameters.CustomParams<smGameParameters>();
 			}
 
-			if (!disableSaveLoading)
+			try
 			{
-				node.TryGetValue("alterRecoveredData", ref alterRecoveredData);
-				node.TryGetValue("stockToolbar", ref stockToolbar);
-				node.TryGetValue("warnedAlterRecovered", ref warnedAlterRecovered);
-				node.TryGetValue("warnedToolbar", ref warnedToolbar);
+				ConfigNode paramNodes = node.GetNode("Body_Science_Params");
 
-				try
+				if (paramNodes != null)
 				{
-					ConfigNode paramNodes = node.GetNode("Body_Science_Params");
-
-					if (paramNodes != null)
+					foreach (ConfigNode paramNode in paramNodes.GetNodes("Body_Param"))
 					{
-						foreach (ConfigNode paramNode in paramNodes.GetNodes("Body_Param"))
-						{
-							if (paramNode == null)
-								continue;
+						if (paramNode == null)
+							continue;
 
-							string bodyName = paramNode.GetValue("BodyName");
-							string valuesString = paramNode.GetValue("ParamValues");
-							stringParse(valuesString, bodyName);
-						}
+						string bodyName = paramNode.GetValue("BodyName");
+						string valuesString = paramNode.GetValue("ParamValues");
+						stringParse(valuesString, bodyName);
 					}
 				}
-				catch (Exception e)
-				{
-					SM_MBE.LogFormatted("Body Science Param List Cannot Be Generated Or Loaded: {0}", e);
-				}
-
 			}
-			else
-				SM_MBE.LogFormatted("All save-specific settings disabled; values loaded from config file...");
+			catch (Exception e)
+			{
+				SM_MBE.LogFormatted("Body Science Param List Cannot Be Generated Or Loaded: {0}", e);
+			}
 
 			//Start the window object
-			if (!disableToolbar)
+			if (settings != null && !settings.disableToolbars)
 			{
 				try
 				{
@@ -162,38 +141,30 @@ namespace ScienceParamModifier
 
 		public override void OnSave(ConfigNode node)
 		{
-			if (!disableSaveLoading)
+			try
 			{
-				node.AddValue("alterRecoveredData", alterRecoveredData);
-				node.AddValue("stockToolbar", stockToolbar);
-				node.AddValue("warnedAlterRecovered", warnedAlterRecovered);
-				node.AddValue("warnedToolbar", warnedToolbar);
+				ConfigNode paramNodes = new ConfigNode("Body_Science_Params");
 
-				try
+				for (int i = 0; i < ScienceConfigValuesNode.ConfigCount; i++)
 				{
-					ConfigNode paramNodes = new ConfigNode("Body_Science_Params");
+					bodyParamsContainer b = ScienceConfigValuesNode.getBodyConfig(i);
 
-					for (int i = 0; i < ScienceConfigValuesNode.ConfigCount; i++)
-					{
-						bodyParamsContainer b = ScienceConfigValuesNode.getBodyConfig(i);
+					if (b == null)
+						continue;
 
-						if (b == null)
-							continue;
+					ConfigNode paramNode = new ConfigNode("Body_Param");
 
-						ConfigNode paramNode = new ConfigNode("Body_Param");
+					paramNode.AddValue("BodyName", b.Body.bodyName);
+					paramNode.AddValue("ParamValues", stringConcat(b));
 
-						paramNode.AddValue("BodyName", b.Body.bodyName);
-						paramNode.AddValue("ParamValues", stringConcat(b));
-
-						paramNodes.AddNode(paramNode);
-					}
-
-					node.AddNode(paramNodes);
+					paramNodes.AddNode(paramNode);
 				}
-				catch (Exception e)
-				{
-					SM_MBE.LogFormatted("Science Params Cannot Be Saved: {0}", e);
-				}
+
+				node.AddNode(paramNodes);
+			}
+			catch (Exception e)
+			{
+				SM_MBE.LogFormatted("Science Params Cannot Be Saved: {0}", e);
 			}
 		}
 
