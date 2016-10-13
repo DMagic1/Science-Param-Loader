@@ -40,7 +40,7 @@ namespace ScienceParamModifier
 	class scienceParamModifier : SM_MBW
 	{
 		private const string lockID = "ScienceModifierLockID";
-		private bool dropDown, bSelection, defaultPopup, stockPopup;
+		private bool dropDown, bSelection, defaultPopup, stockPopup, savePopup;
 		private bool controlLock;
 		private string version;
 		private Rect ddRect;
@@ -49,8 +49,6 @@ namespace ScienceParamModifier
 		private string landed, splash, flyingLow, flyingHigh, spaceLow, spaceHigh, recovered, flyingAlt, spaceAlt;
 
 		private List<bodyParamsContainer> paramsList = new List<bodyParamsContainer>();
-
-		private smSettingsWindow settingsWindow;
 
 		private bodyParamsContainer currentBody;
 		private paramSet currentSet;
@@ -94,9 +92,6 @@ namespace ScienceParamModifier
 			base.OnDestroy();
 
 			unlockControls();
-
-			if (settingsWindow != null)
-				Destroy(settingsWindow);
 		}
 
 		private void unlockControls()
@@ -160,6 +155,7 @@ namespace ScienceParamModifier
 				bSelection = false;
 				defaultPopup = false;
 				stockPopup = false;
+				savePopup = false;
 			}
 		}
 
@@ -184,17 +180,7 @@ namespace ScienceParamModifier
 		//Draw the close button in the upper right corner
 		private void closeButton(int id)
 		{
-			Rect r = new Rect(WindowRect.width - 46, 0, 20, 20);
-
-			if (GUI.Button(r, smSkins.settingsIcon, smSkins.configClose))
-			{
-				if (settingsWindow == null)
-					settingsWindow = gameObject.AddComponent<smSettingsWindow>();
-				settingsWindow.Visible = !settingsWindow.Visible;
-			}
-
-			r.x += 20;
-			r.width = r.height = 22;
+			Rect r = new Rect(WindowRect.width - 26, 0, 22, 22);
 
 			if (GUI.Button(r, "✖", smSkins.configClose))
 			{
@@ -246,7 +232,7 @@ namespace ScienceParamModifier
 			}
 			drawValueGroup("Low Orbit Data: ", currentSet.SpaceLowData, ref spaceLowVal, 0.1f, 50, ref spaceLow, 1);
 			drawValueGroup("High Orbit Data: ", currentSet.SpaceHighData, ref spaceHighVal, 0.1f, 50, ref spaceHigh, 1);
-			if (scienceModifierScenario.Instance.alterRecoveredData)
+			if (scienceModifierScenario.Instance.Settings.editRecovered)
 				drawValueGroup("Recovery Data: ", currentSet.RecoveredData, ref recoveredVal, 0.1f, 50, ref recovered, 1);
 			if (currentBody.Body.atmosphere)
 				drawValueGroup("Flying Threshold: ", currentSet.FlyingThreshold, ref flyingAltVal, 100, currentBody.MaxFlying, ref flyingAlt, 0, "m", 10);
@@ -284,6 +270,16 @@ namespace ScienceParamModifier
 					}
 					GUILayout.FlexibleSpace();
 				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+					GUILayout.Space(20);
+					if (GUILayout.Button("Save To Config"))
+					{
+						dropDown = !dropDown;
+						savePopup = !savePopup;
+					}
+					GUILayout.Space(20);
+				GUILayout.EndHorizontal();
 			}
 			else
 			{
@@ -299,6 +295,12 @@ namespace ScienceParamModifier
 					GUILayout.FlexibleSpace();
 					GUILayout.Label("Stock Values", smSkins.configButton, GUILayout.Width(100));
 					GUILayout.FlexibleSpace();
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+					GUILayout.Space(20);
+					GUILayout.Label("Save To Config", smSkins.configButton);
+					GUILayout.Space(20);
 				GUILayout.EndHorizontal();
 			}
 		}
@@ -337,7 +339,7 @@ namespace ScienceParamModifier
 
 				else if (defaultPopup)
 				{
-					ddRect = new Rect(20, WindowRect.height - 180, 150, 120);
+					ddRect = new Rect(20, WindowRect.height - 206, 150, 120);
 					GUI.Box(ddRect, "");
 					Rect r = new Rect(ddRect.x + 5, ddRect.y + 5, 140, 90);
 					GUI.Label(r, "Science Values\nFor:<b>" + currentBody.Body.theName + "</b>\nWill Be Reset\nTo Default", smSkins.resetBox);
@@ -356,7 +358,7 @@ namespace ScienceParamModifier
 
 				else if (stockPopup)
 				{
-					ddRect = new Rect(20, WindowRect.height - 180, 150, 120);
+					ddRect = new Rect(20, WindowRect.height - 206, 150, 120);
 					GUI.Box(ddRect, "");
 					Rect r = new Rect(ddRect.x + 5, ddRect.y + 5, 140, 90);
 					GUI.Label(r, "Science Values\nFor:<b>" + currentBody.Body.theName + "</b>\nWill Be Reset\nTo Stock", smSkins.resetBox);
@@ -370,6 +372,26 @@ namespace ScienceParamModifier
 						dropDown = false;
 						stockPopup = false;
 						stockValues();
+					}
+				}
+
+				else if (savePopup)
+				{
+					ddRect = new Rect(20, WindowRect.height - 206, 150, 120);
+					GUI.Box(ddRect, "");
+					Rect r = new Rect(ddRect.x + 5, ddRect.y + 5, 140, 90);
+					GUI.Label(r, "Overwrite Default\nConfig File With\nCurrent Values?", smSkins.resetBox);
+
+					r.x += 30;
+					r.y += 75;
+					r.width = 80;
+					r.height = 30;
+					if (GUI.Button(r, "Confirm", smSkins.resetButton))
+					{
+						dropDown = false;
+						savePopup = false;
+						if (smConfigLoad.TopNode != null)
+							smConfigLoad.TopNode.Save();
 					}
 				}
 
@@ -473,7 +495,7 @@ namespace ScienceParamModifier
 			currentBody.setNewParamValue(flyingAltVal, scienceParamType.flyingAltitude);
 			currentBody.setNewParamValue(spaceAltVal, scienceParamType.spaceAltitude);
 
-			if (scienceModifierScenario.Instance.alterRecoveredData)
+			if (scienceModifierScenario.Instance.Settings.editRecovered)
 				currentBody.setNewParamValue(recoveredVal, scienceParamType.recovered);
 		}
 
