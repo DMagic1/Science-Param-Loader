@@ -35,11 +35,11 @@ using UnityEngine;
 namespace ScienceParamModifier.Toolbar
 {
 
-	class smToolbar : SM_MBE
+	class smToolbar : MonoBehaviour
 	{
 		private IButton scienceParamButton;
 
-		protected override void Start()
+		private void Start()
 		{
 			setupToolbar();
 		}
@@ -69,7 +69,7 @@ namespace ScienceParamModifier.Toolbar
 				};
 		}
 
-		protected override void OnDestroy()
+		private void OnDestroy()
 		{
 			if (!ToolbarManager.ToolbarAvailable) return;
 			if (scienceParamButton != null)

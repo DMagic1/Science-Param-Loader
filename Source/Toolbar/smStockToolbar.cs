@@ -35,11 +35,11 @@ using KSP.UI.Screens;
 
 namespace ScienceParamModifier.Toolbar
 {
-	public class smStockToolbar : SM_MBE
+	public class smStockToolbar : MonoBehaviour
 	{
 		private ApplicationLauncherButton stockToolbarButton = null;
 
-		protected override void Start()
+		private void Start()
 		{
 			setupToolbar();
 		}
@@ -49,7 +49,7 @@ namespace ScienceParamModifier.Toolbar
 			StartCoroutine(addButton());
 		}
 
-		protected override void OnDestroy()
+		private void OnDestroy()
 		{
 			GameEvents.onGUIApplicationLauncherUnreadifying.Remove(removeButton);
 
@@ -78,9 +78,9 @@ namespace ScienceParamModifier.Toolbar
 		private void toggle()
 		{
 			if (scienceModifierScenario.Instance == null)
-				LogFormatted("Science Modifier Scenario Not Loaded...");
+				SM_MBE.LogFormatted("Science Modifier Scenario Not Loaded...");
 			else if (scienceModifierScenario.Instance.scienceParamModifier == null)
-				LogFormatted("Science Modifier Window Not Loaded...");
+				SM_MBE.LogFormatted("Science Modifier Window Not Loaded...");
 			else
 			{
 				scienceModifierScenario.Instance.scienceParamModifier.Visible = !scienceModifierScenario.Instance.scienceParamModifier.Visible;
