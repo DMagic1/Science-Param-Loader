@@ -254,6 +254,8 @@ namespace ScienceParamModifier.Framework
         //See this for info on order of execuction
         //  http://docs.unity3d.com/Documentation/Manual/ExecutionOrder.html
 
+		private static bool _seedGenerated;
+
         /// <summary>
         /// Unity Help: Awake is called when the script instance is being loaded.
         ///
@@ -264,7 +266,12 @@ namespace ScienceParamModifier.Framework
         {
             LogFormatted_DebugOnly("New MBExtended Awakened");
 
-			UnityEngine.Random.InitState((int)(DateTime.Now - DateTime.Now.Date).TotalSeconds);
+			if (!_seedGenerated)
+			{
+				UnityEngine.Random.InitState((int)(DateTime.Now - DateTime.Now.Date).TotalSeconds);
+
+				_seedGenerated = true;
+			}
         }
 
         /// <summary>
