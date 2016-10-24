@@ -104,8 +104,8 @@ namespace ScienceParamModifier.Framework
 		{
 			base.Start();
 
-			GameEvents.onShowUI.Add(UIOn);
-			GameEvents.onHideUI.Add(UIOff);
+			GameEvents.onShowUI.Add(UIShow);
+			GameEvents.onHideUI.Add(UIHide);
 			GameEvents.onGUIMissionControlSpawn.Add(UIOff);
 			GameEvents.onGUIMissionControlDespawn.Add(UIOn);
 			GameEvents.onGUIRnDComplexSpawn.Add(UIOff);
@@ -120,8 +120,8 @@ namespace ScienceParamModifier.Framework
 		{
 			base.OnDestroy();
 
-			GameEvents.onShowUI.Remove(UIOn);
-			GameEvents.onHideUI.Remove(UIOff);
+			GameEvents.onShowUI.Remove(UIShow);
+			GameEvents.onHideUI.Remove(UIHide);
 			GameEvents.onGUIMissionControlSpawn.Remove(UIOff);
 			GameEvents.onGUIMissionControlDespawn.Remove(UIOn);
 			GameEvents.onGUIRnDComplexSpawn.Remove(UIOff);
@@ -134,14 +134,24 @@ namespace ScienceParamModifier.Framework
 
 		private void UIOn()
 		{
-			LogFormatted("UI On");
 			showUI = true;
 		}
 
 		private void UIOff()
 		{
-			LogFormatted("UI Off");
 			showUI = false;
+		}
+
+		private void UIHide()
+		{
+			if (HighLogic.LoadedSceneIsFlight)
+				showUI = true;
+		}
+
+		private void UIShow()
+		{
+			if (HighLogic.LoadedSceneIsFlight)
+				showUI = false;
 		}
 
 		private bool showUI = true;
