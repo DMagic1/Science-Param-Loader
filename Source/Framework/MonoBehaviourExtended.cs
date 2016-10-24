@@ -36,26 +36,26 @@ namespace ScienceParamModifier.Framework
     /// </example>
     public abstract class SM_MBE : MonoBehaviour
     {
-        #region Constructor
-        ///// <summary>
-        ///// This is marked private so you have to use the Factory Method to create any new instance. The Factory Method will add the new instance to a gameObject which is a requirement for Unity events to occur on the object
-        ///// </summary>
-        //private MonoBehaviourExtended()
-        //{
+		//#region Constructor
+		/////// <summary>
+		/////// This is marked private so you have to use the Factory Method to create any new instance. The Factory Method will add the new instance to a gameObject which is a requirement for Unity events to occur on the object
+		/////// </summary>
+		////private MonoBehaviourExtended()
+		////{
 
-        //}
+		////}
 
-        //internal static MonoBehaviourExtended CreateComponent(GameObject AttachTo)
-        //{
-        //    MonoBehaviourExtended monoReturn;
-        //    monoReturn = AttachTo.AddComponent<MonoBehaviourExtended>();
-        //    return monoReturn;
-        //}
-        static SM_MBE()
-        {
-            UnityEngine.Random.seed = (int)(DateTime.Now - DateTime.Now.Date).TotalSeconds;
-        }
-        #endregion
+		////internal static MonoBehaviourExtended CreateComponent(GameObject AttachTo)
+		////{
+		////    MonoBehaviourExtended monoReturn;
+		////    monoReturn = AttachTo.AddComponent<MonoBehaviourExtended>();
+		////    return monoReturn;
+		////}
+		//static SM_MBE()
+		//{
+		//	UnityEngine.Random.seed = (int)(DateTime.Now - DateTime.Now.Date).TotalSeconds;
+		//}
+		//#endregion
 
         internal T AddComponent<T>() where T : UnityEngine.Component
         {
@@ -263,6 +263,8 @@ namespace ScienceParamModifier.Framework
         protected virtual void Awake()
         {
             LogFormatted_DebugOnly("New MBExtended Awakened");
+
+			UnityEngine.Random.InitState((int)(DateTime.Now - DateTime.Now.Date).TotalSeconds);
         }
 
         /// <summary>
@@ -404,7 +406,7 @@ namespace ScienceParamModifier.Framework
         internal static void LogFormatted(String Message, params object[] strParams)
         {
             Message = String.Format(Message, strParams);                  // This fills the params into the message
-            String strMessageLine = String.Format("{0},{2},{1}",
+            String strMessageLine = String.Format("{0},[{2}],{1}",
                 DateTime.Now, Message,
                 _AssemblyName);                                           // This adds our standardised wrapper to each line
             UnityEngine.Debug.Log(strMessageLine);                        // And this puts it in the log
