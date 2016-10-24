@@ -26,17 +26,17 @@ namespace ScienceParamModifier
 
 		public smGameParameters()
 		{
+			toolbar = ToolbarManager.ToolbarAvailable;
+
 			if (HighLogic.LoadedScene != GameScenes.MAINMENU)
 				return;
 
-			if (smConfigLoad.TopNode == null)
+			if (smConfigLoad.Settings == null)
 				return;
 
 			editRecovered = smConfigLoad.Settings.alterRecoveredData;
 			disableToolbars = smConfigLoad.Settings.disableToolbar;
 			useStock = smConfigLoad.Settings.stockToolbar;
-
-			toolbar = ToolbarManager.ToolbarAvailable;
 		}
 
 		public override GameParameters.GameMode GameMode
