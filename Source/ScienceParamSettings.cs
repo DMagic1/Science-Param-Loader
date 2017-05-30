@@ -61,6 +61,11 @@ namespace ScienceParamModifier
 
 			if (Load())
 				LogFormatted("Settings file loaded");
+			else
+			{
+				if (Save())
+					LogFormatted("New Settings files generated at:\n{0}", FilePath);
+			}
 		}
 
 		public void SettingsApplied()
