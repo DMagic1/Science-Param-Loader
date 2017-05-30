@@ -342,7 +342,7 @@ namespace ScienceParamModifier
 					ddRect = new Rect(20, WindowRect.height - 206, 150, 120);
 					GUI.Box(ddRect, "");
 					Rect r = new Rect(ddRect.x + 5, ddRect.y + 5, 140, 90);
-					GUI.Label(r, "Science Values\nFor:<b>" + currentBody.Body.theName + "</b>\nWill Be Reset\nTo Default", smSkins.resetBox);
+					GUI.Label(r, "Science Values\nFor:<b>" + currentBody.Body.bodyName + "</b>\nWill Be Reset\nTo Default", smSkins.resetBox);
 
 					r.x += 30;
 					r.y += 75;
@@ -361,7 +361,7 @@ namespace ScienceParamModifier
 					ddRect = new Rect(20, WindowRect.height - 206, 150, 120);
 					GUI.Box(ddRect, "");
 					Rect r = new Rect(ddRect.x + 5, ddRect.y + 5, 140, 90);
-					GUI.Label(r, "Science Values\nFor:<b>" + currentBody.Body.theName + "</b>\nWill Be Reset\nTo Stock", smSkins.resetBox);
+					GUI.Label(r, "Science Values\nFor:<b>" + currentBody.Body.bodyName + "</b>\nWill Be Reset\nTo Stock", smSkins.resetBox);
 
 					r.x += 30;
 					r.y += 75;
