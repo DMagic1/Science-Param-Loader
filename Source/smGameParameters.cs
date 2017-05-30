@@ -11,11 +11,11 @@ namespace ScienceParamModifier
 
 		[GameParameters.CustomStringParameterUI("", lines = 2, autoPersistance = false)]
 		public string reload = "A re-load is required for some changes to take effect.";
-		[GameParameters.CustomParameterUI("Edit Recovered Data Value", autoPersistance = true)]
+		[GameParameters.CustomParameterUI("Edit Recovered Data Value", toolTip = "Edit the recovered data value; activating this is not recommended as the value is used by the contract system", autoPersistance = true)]
 		public bool editRecovered;
 		[GameParameters.CustomStringParameterUI("Warning", lines = 3)]
 		public string recoveryWarning = "The <b>Recovered Data Value</b> is used extensively by contracts and should not generally be altered.";
-		[GameParameters.CustomParameterUI("Disable All Toolbars", autoPersistance = true)]
+		[GameParameters.CustomParameterUI("Disable All Toolbars", toolTip = "Disable all in-game toolbars and windows", autoPersistance = true)]
 		public bool disableToolbars;
 		[GameParameters.CustomStringParameterUI("Warning", lines = 2)]
 		public string toolbarWarning = "This will only take effect if the <b>Use As Default</b> option is also selected";
@@ -50,6 +50,11 @@ namespace ScienceParamModifier
 		}
 
 		public override string Section
+		{
+			get { return "DMagic Mods"; }
+		}
+
+		public override string DisplaySection
 		{
 			get { return "DMagic Mods"; }
 		}
