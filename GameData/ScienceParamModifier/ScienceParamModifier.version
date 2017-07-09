@@ -1,7 +1,7 @@
 {
      "NAME":"Celestial Body Science Editor",
 	 "URL":"https://raw.githubusercontent.com/DMagic1/Science-Param-Loader/master/GameData/ScienceParamModifier/ScienceParamModifier.version",
-     "DOWNLOAD":"http://spacedock.info/mod/136/Celestial%20Body%20Science%20Editor/download/9.0",
+     "DOWNLOAD":"http://spacedock.info/mod/136/Celestial%20Body%20Science%20Editor/download/10.0",
      "GITHUB":{
          "USERNAME":"DMagic1",
          "REPOSITORY":"Science-Param-Loader",
@@ -10,7 +10,7 @@
      "VERSION":{
          "MAJOR":1,
          "MINOR":0,
-         "PATCH":9,
+         "PATCH":10,
          "BUILD":0
      },
      "KSP_VERSION":{
