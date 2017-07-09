@@ -25,13 +25,18 @@ THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.IO;
 using UnityEngine;
 using ScienceParamModifier.Framework;
 
 namespace ScienceParamModifier
 {
-	public class ScienceParamSettings : SM_ConfigNodeStorage
+	[KSPAddon(KSPAddon.Startup.MainMenu, true)]
+	public class ScienceParamSettings : SM_MBE
 	{
+		private static ScienceParamSettings instance;
+
 		[Persistent]
 		public bool disableToolbar = false;
 		[Persistent]
@@ -40,23 +45,27 @@ namespace ScienceParamModifier
 		public bool stockToolbar = true;
 
 		private smGameParameters settings;
-
-		private static ScienceParamSettings instance;
+		private const string fileName = "PluginData/ScienceParamSettings.cfg";
+		private string fullPath;
 
 		public static ScienceParamSettings Instance
 		{
 			get { return instance; }
 		}
 
-		public ScienceParamSettings(string file)
+		protected override void Awake()
 		{
 			if (instance != null)
+			{
+				Destroy(gameObject);
 				return;
+			}
+
+			DontDestroyOnLoad(gameObject);
 
 			instance = this;
 
-			FilePath = file;
-
+			fullPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), fileName).Replace("\\", "/");
 			GameEvents.OnGameSettingsApplied.Add(SettingsApplied);
 
 			if (Load())
@@ -64,8 +73,13 @@ namespace ScienceParamModifier
 			else
 			{
 				if (Save())
-					LogFormatted("New Settings files generated at:\n{0}", FilePath);
+					LogFormatted("New Settings file generated at:\n{0}", fullPath);
 			}
+		}
+		
+		protected override void OnDestroy()
+		{
+			GameEvents.OnGameSettingsApplied.Remove(SettingsApplied);
 		}
 
 		public void SettingsApplied()
@@ -78,19 +92,78 @@ namespace ScienceParamModifier
 
 			if (settings.useAsDefault)
 			{
+				disableToolbar = settings.disableToolbars;
+				alterRecoveredData = settings.editRecovered;
+				stockToolbar = settings.useStock;
+
 				if (Save())
 					LogFormatted("Settings file saved");
 			}
 		}
 
-		public override void OnEncodeToConfigNode()
+		public bool Load()
 		{
-			if (settings == null)
-				return;
+			bool b = false;
 
-			disableToolbar = settings.disableToolbars;
-			alterRecoveredData = settings.editRecovered;
-			stockToolbar = settings.useStock;
+			try
+			{
+				if (File.Exists(fullPath))
+				{
+					ConfigNode node = ConfigNode.Load(fullPath);
+					ConfigNode unwrapped = node.GetNode(GetType().Name);
+					ConfigNode.LoadObjectFromConfig(this, unwrapped);
+					b = true;
+				}
+				else
+				{
+					LogFormatted("Settings file could not be found [{0}]", fullPath);
+					b = false;
+				}
+			}
+			catch (Exception e)
+			{
+				LogFormatted("Error while loading settings file from [{0}]\n{1}", fullPath, e);
+				b = false;
+			}
+
+			return b;
+		}
+
+		public bool Save()
+		{
+			bool b = false;
+
+			try
+			{
+				ConfigNode node = AsConfigNode();
+				ConfigNode wrapper = new ConfigNode(GetType().Name);
+				wrapper.AddNode(node);
+				wrapper.Save(fullPath);
+				b = true;
+			}
+			catch (Exception e)
+			{
+				LogFormatted("Error while saving settings file at [{0}]\n{1}", fullPath, e);
+				b = false;
+			}
+
+			return b;
+		}
+
+		private ConfigNode AsConfigNode()
+		{
+			try
+			{
+				ConfigNode node = new ConfigNode(GetType().Name);
+
+				node = ConfigNode.CreateConfigFromObject(this, node);
+				return node;
+			}
+			catch (Exception e)
+			{
+				LogFormatted("Failed to generate settings file node...\n{0}", e);
+				return new ConfigNode(GetType().Name);
+			}
 		}
 	}
 }
