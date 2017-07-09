@@ -38,10 +38,16 @@ namespace ScienceParamModifier.Framework
             set
             {
                 //Combine the Location of the assembly and the provided string. This means we can use relative or absolute paths
-                _FilePath = System.IO.Path.Combine(_AssemblyFolder, value).Replace("\\","/");
+                _FilePath = System.IO.Path.Combine(KSPUtil.ApplicationRootPath, "GameData/" + value + ".cfg").Replace("\\","/");
             }
         }
 
+		private string topNodeName;
+		public string TopNodeName
+		{
+			get { return topNodeName; }
+			internal set { topNodeName = value; }
+		}
         /// <summary>
         /// Gets the filename portion of the FullPath
         /// </summary>
@@ -110,12 +116,8 @@ namespace ScienceParamModifier.Framework
                 LogFormatted_DebugOnly("Loading ConfigNode");
                 if (FileExists)
                 {
-                    //Load the file into a config node
-                    ConfigNode cnToLoad = ConfigNode.Load(fileFullName);
-                    //remove the wrapper node that names the class stored
-                    ConfigNode cnUnwrapped = cnToLoad.GetNode(this.GetType().Name);
-                    //plug it in to the object
-                    ConfigNode.LoadObjectFromConfig(this, cnUnwrapped);
+					ConfigNode cnToLoad = GameDatabase.Instance.GetConfigNode(topNodeName);
+					ConfigNode.LoadObjectFromConfig(this, cnToLoad);
                     blnReturn = true;
                 }
                 else
@@ -133,6 +135,31 @@ namespace ScienceParamModifier.Framework
             }
             return blnReturn;
         }
+
+		public bool LoadSavedCopy()
+		{
+			try
+			{
+				LogFormatted_DebugOnly("Loading ConfigNode");
+				if (FileExists)
+				{
+					ConfigNode cnToLoad = ConfigNode.Load(FilePath);
+					ConfigNode cnUnwrapped = cnToLoad.GetNode(this.GetType().Name);
+					ConfigNode.LoadObjectFromConfig(this, cnUnwrapped);
+					return true;
+				}
+				else
+				{
+					LogFormatted("File could not be found to load after saving new copy ({0})", FilePath);
+					return false;
+				}
+			}
+			catch (Exception ex)
+			{
+				LogFormatted("Failed to Load ConfigNode from file after saving ({0}) - Error:{1}", FilePath, ex.Message);
+				return false;
+			}
+		}
 
         /// <summary>
         /// Saves the object to a ConfigNode structure in the previously supplied file
@@ -237,9 +264,8 @@ namespace ScienceParamModifier.Framework
         internal static void LogFormatted(String Message, params object[] strParams)
         {
             Message = String.Format(Message, strParams);                  // This fills the params into the message
-            String strMessageLine = String.Format("{0},{2},{1}",
-                DateTime.Now, Message,
-                _AssemblyName);                                           // This adds our standardised wrapper to each line
+            String strMessageLine = String.Format("[{0}],{1},{2}",
+                _AssemblyName, DateTime.Now, Message);                                           // This adds our standardised wrapper to each line
             UnityEngine.Debug.Log(strMessageLine);                        // And this puts it in the log
         }
 
