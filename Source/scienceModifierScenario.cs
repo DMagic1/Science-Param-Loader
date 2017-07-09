@@ -96,7 +96,7 @@ namespace ScienceParamModifier
 		{
 			smNode = smConfigLoad.TopNode;
 			if (smNode == null)
-				smNode = new ScienceConfigValuesNode(smConfigLoad.fileName);
+				smNode = new ScienceConfigValuesNode(smConfigLoad.fileName, smConfigLoad.configNodeName);
 
 			if (HighLogic.LoadedSceneIsGame && HighLogic.CurrentGame != null)
 			{

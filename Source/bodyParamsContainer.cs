@@ -107,7 +107,7 @@ namespace ScienceParamModifier
 		{
 			if (body.atmosphere)
 			{
-				maxFlying = (float)(body.atmosphereDepth- 1000);
+				maxFlying = (float)(body.atmosphereDepth - 1000);
 				minSpace = (float)(body.atmosphereDepth + 1000);
 			}
 			else
@@ -148,7 +148,7 @@ namespace ScienceParamModifier
 			float recovered = adjustedParams.RecoveredData;
 			adjustedParams = new paramSet(defaultParams);
 
-			if (smConfigLoad.Settings != null && !smConfigLoad.Settings.alterRecoveredData)
+			if (ScienceParamSettings.Instance != null && !ScienceParamSettings.Instance.alterRecoveredData)
 				setNewParamValue(recovered, scienceParamType.recovered);
 		}
 

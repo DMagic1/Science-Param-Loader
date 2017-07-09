@@ -31,12 +31,12 @@ namespace ScienceParamModifier
 			if (HighLogic.LoadedScene != GameScenes.MAINMENU)
 				return;
 
-			if (smConfigLoad.Settings == null)
+			if (ScienceParamSettings.Instance == null)
 				return;
 
-			editRecovered = smConfigLoad.Settings.alterRecoveredData;
-			disableToolbars = smConfigLoad.Settings.disableToolbar;
-			useStock = smConfigLoad.Settings.stockToolbar;
+			editRecovered = ScienceParamSettings.Instance.alterRecoveredData;
+			disableToolbars = ScienceParamSettings.Instance.disableToolbar;
+			useStock = ScienceParamSettings.Instance.stockToolbar;
 		}
 
 		public override GameParameters.GameMode GameMode
