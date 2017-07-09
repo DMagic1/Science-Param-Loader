@@ -36,28 +36,21 @@ namespace ScienceParamModifier
 	public class smConfigLoad : SM_MBE
 	{
 		private static ScienceConfigValuesNode topConfigNode;
-		private static ScienceParamSettings settings;
 		private static bool loaded = false;
 
-		internal const string fileName = "ScienceParamModifierConfig.cfg";
-		private const string settingsFileName = "PluginData/ScienceParamSettings.cfg";
+		internal const string fileName = "ScienceParamModifier/ScienceParamModifierConfig";
+		internal const string configNodeName = "ScienceConfigValuesNode";
 
 		public static ScienceConfigValuesNode TopNode
 		{
 			get { return topConfigNode; }
 		}
 
-		public static ScienceParamSettings Settings
-		{
-			get { return settings; }
-		}
-
 		protected override void Start()
 		{
 			if (!loaded)
 			{
-				topConfigNode = new ScienceConfigValuesNode(fileName);
-				settings = new ScienceParamSettings(settingsFileName);
+				topConfigNode = new ScienceConfigValuesNode(fileName, configNodeName);
 
 				loaded = true;
 			}

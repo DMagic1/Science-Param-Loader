@@ -68,15 +68,20 @@ namespace ScienceParamModifier
 			}
 		}
 
-		internal ScienceConfigValuesNode(string filePath)
+		internal ScienceConfigValuesNode(string filePath, string topNode)
 		{
 			FilePath = filePath;
+			TopNodeName = filePath + "/" + topNode;
 
-			Load();
+			if (!Load())
+			{
+				Save();
+				LoadSavedCopy();
+			}
+			else
+				LogFormatted("Science Param Loader Default Values Loaded");
 
 			checkAllBodies();
-
-			Save();
 		}
 
 		public static int ConfigCount
