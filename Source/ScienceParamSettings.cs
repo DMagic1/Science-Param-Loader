@@ -99,6 +99,13 @@ namespace ScienceParamModifier
 				if (Save())
 					LogFormatted("Settings file saved");
 			}
+            else if (disableToolbar != settings.disableToolbars)
+            {
+                disableToolbar = settings.disableToolbars;
+
+                if (Save())
+                    LogFormatted("Settings file saved - toolbar status updated");
+            }
 		}
 
 		public bool Load()
