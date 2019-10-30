@@ -51,12 +51,12 @@ namespace ScienceParamModifier
 
 		public override string Section
 		{
-			get { return "DMagic Mods"; }
+			get { return "Science Param Modifier"; }
 		}
 
 		public override string DisplaySection
 		{
-			get { return "DMagic Mods"; }
+			get { return "Science Param Modifier"; }
 		}
 
 		public override string Title
