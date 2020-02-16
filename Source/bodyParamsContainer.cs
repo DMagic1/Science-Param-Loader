@@ -57,7 +57,7 @@ namespace ScienceParamModifier
 		public bodyParamsContainer(CelestialBody b)
 		{
 			body = b;
-			bodyName = b.bodyName;
+			bodyName = b.bodyDisplayName;
 
 			scienceParams = b.scienceValues;
 
@@ -80,7 +80,7 @@ namespace ScienceParamModifier
 
 		private void loadFromNode()
 		{
-			body = FlightGlobals.Bodies.FirstOrDefault(b => b.bodyName == bodyName);
+			body = FlightGlobals.Bodies.FirstOrDefault(b => b.bodyDisplayName == bodyName);
 
 			if (body == null)
 				return;
