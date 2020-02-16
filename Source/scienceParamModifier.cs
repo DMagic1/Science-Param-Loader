@@ -34,6 +34,7 @@ using System.Reflection;
 using ScienceParamModifier.Framework;
 using ScienceParamModifier.Toolbar;
 using UnityEngine;
+using KSP.Localization;
 
 namespace ScienceParamModifier
 {
@@ -63,7 +64,7 @@ namespace ScienceParamModifier
 				default: version = ainfoV.InformationalVersion; break;
 			}
 
-			WindowCaption = "Science Params Modifier";
+			WindowCaption = Localizer.Format("#DMagic_ScienceParamModifier_WindowCaption");//"Science Params Modifier"
 			WindowRect = new Rect(40, 80, 220, 260);
 			WindowOptions = new GUILayoutOption[1] { GUILayout.Height(260) };
 			WindowStyle = smSkins.newWindowStyle;
@@ -202,7 +203,7 @@ namespace ScienceParamModifier
 			GUILayout.Space(10);
 			GUILayout.BeginHorizontal();
 				GUILayout.Space(10);
-				if(GUILayout.Button("Celestial Body: ", smSkins.configDropDown, GUILayout.MaxWidth(140)))
+				if(GUILayout.Button(Localizer.Format("#DMagic_ScienceParamModifier_BodySelectButton") + " ", smSkins.configDropDown, GUILayout.MaxWidth(140)))//Celestial Body:
 				{
 					dropDown = !dropDown;
 					bSelection = !bSelection;
@@ -211,9 +212,9 @@ namespace ScienceParamModifier
 				GUILayout.Space(10);
 
 				if (currentBody != null)
-					GUILayout.Label(currentBody.Body.bodyName, smSkins.configHeader, GUILayout.Width(120));
+					GUILayout.Label(currentBody.Body.bodyDisplayName, smSkins.configHeader, GUILayout.Width(120));
 				else
-					GUILayout.Label("Unknown", smSkins.configHeader, GUILayout.Width(120));
+					GUILayout.Label(Localizer.Format("#DMagic_ScienceParamModifier_BodyUnknown"), smSkins.configHeader, GUILayout.Width(120));//"Unknown"
 				GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 		}
@@ -222,21 +223,21 @@ namespace ScienceParamModifier
 		private void editScienceValues(int id)
 		{
 			GUILayout.Space(10);
-			drawValueGroup("Landed Data: ", currentSet.LandedData, ref landedVal, 0.1f, 50, ref landed, 1);
+			drawValueGroup(Localizer.Format("#DMagic_ScienceParamModifier_LandedData") + ": ", currentSet.LandedData, ref landedVal, 0.1f, 50, ref landed, 1);//Landed Data
 			if (currentBody.Body.ocean)
-				drawValueGroup("Splashed Data: ", currentSet.SplashedData, ref splashVal, 0.1f, 50, ref splash, 1);
+				drawValueGroup(Localizer.Format("#DMagic_ScienceParamModifier_SplashedData") + ": ", currentSet.SplashedData, ref splashVal, 0.1f, 50, ref splash, 1);//Splashed Data
 			if (currentBody.Body.atmosphere)
 			{
-				drawValueGroup("Flying Low Data: ", currentSet.FlyingLowData, ref flyingLowVal, 0.1f, 50, ref flyingLow, 1);
-				drawValueGroup("Flying High Data: ", currentSet.FlyingHighData, ref flyingHighVal, 0.1f, 50, ref flyingHigh, 1);
+				drawValueGroup(Localizer.Format("#DMagic_ScienceParamModifier_FlyingLowData") + ": ", currentSet.FlyingLowData, ref flyingLowVal, 0.1f, 50, ref flyingLow, 1);//Flying Low Data
+				drawValueGroup(Localizer.Format("#DMagic_ScienceParamModifier_FlyingHighData") + ": ", currentSet.FlyingHighData, ref flyingHighVal, 0.1f, 50, ref flyingHigh, 1);//Flying High Data
 			}
-			drawValueGroup("Low Orbit Data: ", currentSet.SpaceLowData, ref spaceLowVal, 0.1f, 50, ref spaceLow, 1);
-			drawValueGroup("High Orbit Data: ", currentSet.SpaceHighData, ref spaceHighVal, 0.1f, 50, ref spaceHigh, 1);
+			drawValueGroup(Localizer.Format("#DMagic_ScienceParamModifier_LowOrbitData") + ": ", currentSet.SpaceLowData, ref spaceLowVal, 0.1f, 50, ref spaceLow, 1);//Low Orbit Data
+			drawValueGroup(Localizer.Format("#DMagic_ScienceParamModifier_HighOrbitData") + ": ", currentSet.SpaceHighData, ref spaceHighVal, 0.1f, 50, ref spaceHigh, 1);//High Orbit Data
 			if (scienceModifierScenario.Instance.Settings.editRecovered)
-				drawValueGroup("Recovery Data: ", currentSet.RecoveredData, ref recoveredVal, 0.1f, 50, ref recovered, 1);
+				drawValueGroup(Localizer.Format("#DMagic_ScienceParamModifier_RecoveryData") + ": ", currentSet.RecoveredData, ref recoveredVal, 0.1f, 50, ref recovered, 1);//Recovery Data
 			if (currentBody.Body.atmosphere)
-				drawValueGroup("Flying Threshold: ", currentSet.FlyingThreshold, ref flyingAltVal, 100, currentBody.MaxFlying, ref flyingAlt, 0, "m", 10);
-			drawValueGroup("Space Threshold: ", currentSet.SpaceThreshold, ref spaceAltVal, currentBody.MinSpace, currentBody.MaxSpace, ref spaceAlt, 0, "m", 10);
+				drawValueGroup(Localizer.Format("#DMagic_ScienceParamModifier_FlyingThreshold") + ": ", currentSet.FlyingThreshold, ref flyingAltVal, 100, currentBody.MaxFlying, ref flyingAlt, 0, "m", 10);//Flying Threshold
+			drawValueGroup(Localizer.Format("#DMagic_ScienceParamModifier_SpaceThreshold") + ": ", currentSet.SpaceThreshold, ref spaceAltVal, currentBody.MinSpace, currentBody.MaxSpace, ref spaceAlt, 0, "m", 10);//Space Threshold
 		}
 
 		//Reset and save buttons
@@ -247,7 +248,7 @@ namespace ScienceParamModifier
 			{
 				GUILayout.BeginHorizontal();
 					GUILayout.Space(20);
-					if (GUILayout.Button("Apply Values"))
+					if (GUILayout.Button(Localizer.Format("#DMagic_ScienceParamModifier_ApplyValues")))//"Apply Values"
 					{
 						applyValues();
 						setCurrentPlanet(currentBody);
@@ -257,13 +258,13 @@ namespace ScienceParamModifier
 
 				GUILayout.BeginHorizontal();
 					GUILayout.FlexibleSpace();
-					if (GUILayout.Button("Default Values", GUILayout.Width(100)))
+					if (GUILayout.Button(Localizer.Format("#DMagic_ScienceParamModifier_DefaultValues"), GUILayout.Width(100)))//"Default Values"
 					{
 						dropDown = !dropDown;
 						defaultPopup = !defaultPopup;
 					}
 					GUILayout.FlexibleSpace();
-					if (GUILayout.Button("Stock Values", GUILayout.Width(100)))
+					if (GUILayout.Button(Localizer.Format("#DMagic_ScienceParamModifier_StockValues"), GUILayout.Width(100)))//"Stock Values"
 					{
 						dropDown = !dropDown;
 						stockPopup = !stockPopup;
@@ -273,7 +274,7 @@ namespace ScienceParamModifier
 
 				GUILayout.BeginHorizontal();
 					GUILayout.Space(20);
-					if (GUILayout.Button("Save To Config"))
+					if (GUILayout.Button(Localizer.Format("#DMagic_ScienceParamModifier_SaveToConfig")))//"Save To Config"
 					{
 						dropDown = !dropDown;
 						savePopup = !savePopup;
@@ -285,21 +286,21 @@ namespace ScienceParamModifier
 			{
 				GUILayout.BeginHorizontal();
 					GUILayout.Space(20);
-					GUILayout.Label("Apply Values", smSkins.configButton);
+					GUILayout.Label(Localizer.Format("#DMagic_ScienceParamModifier_ApplyValues"), smSkins.configButton);//"Apply Values"
 					GUILayout.Space(20);
 				GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal();
 					GUILayout.FlexibleSpace();
-					GUILayout.Label("Default Values", smSkins.configButton, GUILayout.Width(100));
+					GUILayout.Label(Localizer.Format("#DMagic_ScienceParamModifier_DefaultValues"), smSkins.configButton, GUILayout.Width(100));//"Default Values"
 					GUILayout.FlexibleSpace();
-					GUILayout.Label("Stock Values", smSkins.configButton, GUILayout.Width(100));
+					GUILayout.Label(Localizer.Format("#DMagic_ScienceParamModifier_StockValues"), smSkins.configButton, GUILayout.Width(100));//"Stock Values"
 					GUILayout.FlexibleSpace();
 				GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal();
 					GUILayout.Space(20);
-					GUILayout.Label("Save To Config", smSkins.configButton);
+					GUILayout.Label(Localizer.Format("#DMagic_ScienceParamModifier_SaveToConfig"), smSkins.configButton);//"Save To Config"
 					GUILayout.Space(20);
 				GUILayout.EndHorizontal();
 			}
@@ -327,7 +328,7 @@ namespace ScienceParamModifier
 
 						Rect r = new Rect(2, (25 * i) + 2, 120, 25);
 
-						if (GUI.Button(r, b.Body.bodyName, smSkins.configDropMenu))
+						if (GUI.Button(r, b.Body.bodyDisplayName, smSkins.configDropMenu))
 						{
 							setCurrentPlanet(b);
 							bSelection = false;
@@ -342,13 +343,13 @@ namespace ScienceParamModifier
 					ddRect = new Rect(20, WindowRect.height - 206, 150, 120);
 					GUI.Box(ddRect, "");
 					Rect r = new Rect(ddRect.x + 5, ddRect.y + 5, 140, 90);
-					GUI.Label(r, "Science Values\nFor:<b>" + currentBody.Body.bodyName + "</b>\nWill Be Reset\nTo Default", smSkins.resetBox);
+					GUI.Label(r, Localizer.Format("#DMagic_ScienceParamModifier_ResetScienceValues", currentBody.Body.bodyDisplayName.LocalizeRemoveGender()), smSkins.resetBox);//"Science Values\nFor:<b>" +  + "</b>\nWill Be Reset\nTo Default"
 
 					r.x += 30;
 					r.y += 75;
 					r.width = 80;
 					r.height = 30;
-					if (GUI.Button(r, "Confirm", smSkins.resetButton))
+					if (GUI.Button(r, Localizer.Format("#DMagic_ScienceParamModifier_Confirm"), smSkins.resetButton))//"Confirm"
 					{
 						dropDown = false;
 						defaultPopup = false;
@@ -361,13 +362,13 @@ namespace ScienceParamModifier
 					ddRect = new Rect(20, WindowRect.height - 206, 150, 120);
 					GUI.Box(ddRect, "");
 					Rect r = new Rect(ddRect.x + 5, ddRect.y + 5, 140, 90);
-					GUI.Label(r, "Science Values\nFor:<b>" + currentBody.Body.bodyName + "</b>\nWill Be Reset\nTo Stock", smSkins.resetBox);
+					GUI.Label(r, Localizer.Format("#DMagic_ScienceParamModifier_ResetScienceValues2", currentBody.Body.bodyDisplayName), smSkins.resetBox);//"Science Values\nFor:<b>" +  + "</b>\nWill Be Reset\nTo Stock"
 
 					r.x += 30;
 					r.y += 75;
 					r.width = 80;
 					r.height = 30;
-					if (GUI.Button(r, "Confirm", smSkins.resetButton))
+					if (GUI.Button(r, Localizer.Format("#DMagic_ScienceParamModifier_Confirm"), smSkins.resetButton))//"Confirm"
 					{
 						dropDown = false;
 						stockPopup = false;
@@ -380,13 +381,13 @@ namespace ScienceParamModifier
 					ddRect = new Rect(20, WindowRect.height - 206, 150, 120);
 					GUI.Box(ddRect, "");
 					Rect r = new Rect(ddRect.x + 5, ddRect.y + 5, 140, 90);
-					GUI.Label(r, "Overwrite Default\nConfig File With\nCurrent Values?", smSkins.resetBox);
+					GUI.Label(r, Localizer.Format("#DMagic_ScienceParamModifier_SavePopup"), smSkins.resetBox);//"Overwrite Default\nConfig File With\nCurrent Values?"
 
 					r.x += 30;
 					r.y += 75;
 					r.width = 80;
 					r.height = 30;
-					if (GUI.Button(r, "Confirm", smSkins.resetButton))
+					if (GUI.Button(r, Localizer.Format("#DMagic_ScienceParamModifier_Confirm"), smSkins.resetButton))//"Confirm"
 					{
 						dropDown = false;
 						savePopup = false;
